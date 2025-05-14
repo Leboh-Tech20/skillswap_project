@@ -1,2 +1,0 @@
-# skillswap_project
-

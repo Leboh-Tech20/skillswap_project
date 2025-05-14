@@ -1,0 +1,77 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="fade-in d-flex justify-content-center">
+  <div class="card shadow-sm p-4" style="max-width: 700px; width: 100%;">
+    <h2 class="fw-bold text-primary text-center mb-3">🤝 Create Skill Exchange Agreement</h2>
+     {% if user.is_authenticated %}
+  <div class="alert alert-info text-center mb-3">
+    <strong>Requester:</strong> {{ user.username }} <br>
+    <strong>Responder:</strong>
+    {% if form.initial.responder %}
+      {{ form.initial.responder.username }}
+    {% else %}
+      (Select from dropdown below)
+    {% endif %}
+  </div>
+{% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      
+      {% for field in form %}
+        {% if field.name != 'accept_terms' %}
+          <div class="mb-3">
+            <label class="form-label fw-semibold">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+              <div class="text-danger small">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Agreement Terms -->
+      <div class="border rounded p-3 mb-3 agreement-terms">
+        <h5 class="fw-bold mb-2">📄 Skill Exchange Agreement</h5>
+        <p><strong>Effective Date:</strong> [Date of Agreement]</p>
+        <p><strong>Platform:</strong> SkillSwap</p>
+        <p><strong>Parties:</strong> User A (Provider) & User B (Receiver)</p>
+        <hr>
+        <p><strong>1. Purpose:</strong> Exchange of skills as described below.</p>
+        <p><strong>2. Services:</strong> User A: [e.g., Web Design] <br> User B: [e.g., Plumbing Repair]</p>
+        <p><strong>3. Schedule:</strong> Start: [Start Date], End: [End Date] <br>Mode: [Online/In-person]</p>
+        <p><strong>4. Terms:</strong> Complete in good faith, notify of changes, dispute rights apply.</p>
+        <p><strong>5. Legal:</strong> Digital agreement is binding under the ECTA (SA).</p>
+        <p><strong>6. Disputes:</strong> Contact SkillSwap Support for mediation if needed.</p>
+        <p class="text-success fw-bold">✅ By agreeing, both parties accept the terms.</p>
+        <hr class="my-3">
+        <h5 class="fw-bold mb-2">📜 Code of Conduct</h5>
+        <ul>
+          <li>✅ Be respectful, inclusive, and professional.</li>
+          <li>✅ Be honest and reliable with your skills and promises.</li>
+          <li>✅ Show up on time and communicate changes early.</li>
+          <li>✅ Use the platform for communication and safety.</li>
+          <li>❌ No harassment, hate, impersonation, or scams.</li>
+          <li>🚨 Report suspicious activity using the Report feature.</li>
+        </ul>
+        <p class="text-muted">Violations may result in warnings, bans, or legal action.</p>
+      </div>
+
+      <!-- Agreement Checkbox -->
+      <div class="form-check mb-4 mt-4 text-start">
+        {{ form.accept_terms }}
+        <label class="form-check-label" for="accept_terms">
+          I have read and agree to the above terms and code of conduct.
+        </label>
+        {% if form.accept_terms.errors %}
+          <div class="text-danger small">{{ form.accept_terms.errors }}</div>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">✅ Agree & Create Agreement</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

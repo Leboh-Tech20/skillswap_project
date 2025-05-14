@@ -1,0 +1,89 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+
+<style>
+  .fade-in {
+    animation: fadeIn 0.8s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .star-rating .btn-check + .btn {
+    font-size: 1.5rem;
+    color: #f5c518;
+    border-color: #f5c518;
+    background-color: transparent;
+  }
+
+  .star-rating .btn-check:checked + .btn {
+    background-color: #f5c518;
+    color: #fff;
+  }
+
+  .btn-gold {
+    background-color: #f5c518;
+    color: #000;
+    border: none;
+  }
+
+  .btn-gold:hover {
+    background-color: #d4aa00;
+  }
+</style>
+
+<div class="fade-in d-flex justify-content-center">
+  <div class="card shadow p-4" style="max-width: 600px; width: 100%;">
+    <!-- Header -->
+    <div class="text-center mb-3">
+      <h3 class="fw-bold text-warning">
+        <i class="fas fa-star-half-alt"></i> Leave a Review
+      </h3>
+      <p class="text-muted">You're reviewing <strong>{{ reviewee.get_full_name|default:reviewee.username }}</strong></p>
+    </div>
+
+    
+    <!-- Review Form -->
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="reviewee_id" value="{{ reviewee.id }}">
+      {% if exchange %}
+        <input type="hidden" name="exchange_id" value="{{ exchange.id }}">
+      {% endif %}
+
+      <!-- Star Rating -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Your Rating</label>
+        <div class="star-rating d-flex gap-2">
+          {% for i in "12345" %}
+            <input type="radio" class="btn-check" name="rating" value="{{ i }}" id="rate{{ i }}" {% if form.rating.value|stringformat:"s" == i %}checked{% endif %} required>
+            <label class="btn btn-outline-warning" for="rate{{ i }}">⭐</label>
+          {% endfor %}
+        </div>
+        {% if form.rating.errors %}
+          <div class="text-danger small">{{ form.rating.errors }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Comment -->
+      <div class="mb-3">
+        <label for="comment" class="form-label fw-semibold">Comment</label>
+        {{ form.comment }}
+        {% if form.comment.errors %}
+          <div class="text-danger small">{{ form.comment.errors }}</div>
+        {% endif %}
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn btn-gold w-100">
+        <i class="fas fa-star"></i> Submit Review
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
